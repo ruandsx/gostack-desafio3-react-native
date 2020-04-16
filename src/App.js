@@ -15,18 +15,27 @@ export default function App() {
   const [repositories, setRepositories] = useState([]);
 
   async function handleLikeRepository(id) {
-    api.post(`repositories/${id}/like`).then((res) => {
-      loadRepositories();
-    });
-  }
-  async function loadRepositories() {
-    api.get("repositories").then((res) => {
-      setRepositories(res.data);
-    });
+    api.post(`repositories/${id}/like`).then(res=>{
+
+      const repositoriesUpdated = repositories.map(repository => {
+     
+        if (repository.id === id) {
+          return res.data;
+        } 
+  
+        return repository;
+      });
+  
+      setRepositories(repositoriesUpdated);
+
+    })
+
   }
 
   useEffect(() => {
-    loadRepositories();
+    api.get("repositories").then((res) => {
+      setRepositories(res.data);
+    });
   }, []);
 
   return (
